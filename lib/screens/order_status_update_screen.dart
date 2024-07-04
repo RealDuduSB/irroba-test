@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:irroba_test/services/irroba_api_service.dart';
+import 'package:irroba_test/widgets/order_status_widgets.dart'; // Importando os widgets da nova estrutura
 
 class OrderStatusUpdateScreen extends StatefulWidget {
   final IrrobaApiService apiService;
@@ -16,7 +17,6 @@ class OrderStatusUpdateScreen extends StatefulWidget {
 
 class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
   int? _orderStatusId;
-  int _notify = 1; // Notificar por padrão
   String _comment = '';
   String _codeTracking = '';
 
@@ -32,7 +32,6 @@ class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
         },
         body: jsonEncode({
           'order_status_id': _orderStatusId,
-          'notify': _notify,
           'comment': _comment,
           'code_tracking': _codeTracking,
         }),
@@ -40,13 +39,12 @@ class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
 
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
-        if (responseData['success'] == 'true') {
-          // Sucesso ao atualizar status
+        if (responseData['success'] == true) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Status do pedido atualizado com sucesso!')),
+            const SnackBar(
+                content: Text('Status do pedido atualizado com sucesso!')),
           );
         } else {
-          // Problema ao atualizar status
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Text(
@@ -67,29 +65,31 @@ class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Atualizar Status do Pedido'),
+        title: const Text('Atualizar Status do Pedido'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Novo ID de Status'),
-              onChanged: (value) => _orderStatusId = int.tryParse(value),
+            StatusIdField(
+              onChanged: (value) {
+                _orderStatusId = int.tryParse(value!);
+              },
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Comentário'),
-              onChanged: (value) => _comment = value,
+            CommentField(
+              onChanged: (value) {
+                _comment = value;
+              },
             ),
-            TextField(
-              decoration: InputDecoration(labelText: 'Código de Rastreio'),
-              onChanged: (value) => _codeTracking = value,
+            CodeTrackingField(
+              onChanged: (value) {
+                _codeTracking = value;
+              },
             ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
+            const SizedBox(height: 16.0),
+            UpdateStatusButton(
               onPressed: _updateOrderStatus,
-              child: Text('Atualizar Status'),
             ),
           ],
         ),

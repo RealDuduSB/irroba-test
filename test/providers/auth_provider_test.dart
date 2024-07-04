@@ -1,7 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
-import 'mock_api_service.mocks.dart';
+
+import '../screens/mocks/mock_api_service.mocks.dart';
 
 void main() {
   late AuthProvider authProvider;
