@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final apiService = Provider.of<ApiService>(context);
+    final apiService = Provider.of<IrrobaApiService>(context);
 
     return Scaffold(
       appBar: AppBar(

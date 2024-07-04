@@ -1,34 +1,50 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:irroba_test/provider/auth_provider.dart';
-import 'package:irroba_test/services/irroba_api_service.dart';
 import 'package:mockito/mockito.dart';
-
-class MockApiService extends Mock implements ApiService {}
+import 'package:irroba_test/provider/auth_provider.dart';
+import 'mock_api_service.mocks.dart';
 
 void main() {
+  late AuthProvider authProvider;
+  late MockIrrobaApiService mockApiService;
+
+  setUp(() {
+    mockApiService = MockIrrobaApiService();
+    authProvider = AuthProvider(apiService: mockApiService);
+  });
+
   group('AuthProvider', () {
-    test('login sets isAuthenticated to true on successful login', () async {
-      final mockApiService = MockApiService();
-      final authProvider = AuthProvider(apiService: mockApiService);
-
-      when(mockApiService.getToken(any, any))
-          .thenAnswer((_) async => 'fake-token');
-
-      await authProvider.login('email@example.com', 'password');
-
-      expect(authProvider.isAuthenticated, true);
+    test('initially user should be null', () {
+      expect(authProvider.user, isNull);
     });
 
-    test('login does not set isAuthenticated to true on failed login',
-        () async {
-      final mockApiService = MockApiService();
-      final authProvider = AuthProvider(apiService: mockApiService);
+    test('login should set user correctly', () async {
+      const username = 'test_user';
+      const password = 'test_password';
+      const token = 'mocked_token';
 
-      when(mockApiService.getToken(any, any)).thenAnswer((_) async => null);
+      when(mockApiService.getToken(username, password))
+          .thenAnswer((_) async => token);
 
-      await authProvider.login('email@example.com', 'wrong-password');
+      await authProvider.login(username, password);
 
-      expect(authProvider.isAuthenticated, false);
+      expect(authProvider.user, isNotNull);
+      expect(authProvider.user!.username, username);
+      expect(authProvider.user!.token, token);
+    });
+
+    test('logout should clear user', () async {
+      const username = 'test_user';
+      const password = 'test_password';
+      const token = 'mocked_token';
+
+      when(mockApiService.getToken(username, password))
+          .thenAnswer((_) async => token);
+
+      await authProvider.login(username, password);
+      expect(authProvider.user, isNotNull);
+
+      authProvider.logout();
+      expect(authProvider.user, isNull);
     });
   });
 }

@@ -2,41 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
 import 'package:irroba_test/screens/login_screen.dart';
-import 'package:irroba_test/services/irroba_api_service.dart';
 import 'package:provider/provider.dart';
+import 'package:mockito/mockito.dart';
+
+class MockAuthProvider extends Mock implements AuthProvider {}
 
 void main() {
-  testWidgets('Login Screen has a login button', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      ChangeNotifierProvider<AuthProvider>(
-        create: (_) => AuthProvider(),
-        child: MaterialApp(home: LoginScreen()),
-      ),
-    );
+  late MockAuthProvider mockAuthProvider;
 
-    expect(find.text('Login'), findsOneWidget);
-    expect(find.byType(TextField), findsNWidgets(2));
+  setUp(() {
+    mockAuthProvider = MockAuthProvider();
   });
 
-  testWidgets('Tapping login button triggers login',
-      (WidgetTester tester) async {
-    final authProvider = AuthProvider(apiService: apiService);
-
-    await tester.pumpWidget(
-      ChangeNotifierProvider<AuthProvider>.value(
-        value: authProvider,
-        child: MaterialApp(home: LoginScreen()),
+  Widget createWidgetUnderTest() {
+    return ChangeNotifierProvider<AuthProvider>(
+      create: (_) => mockAuthProvider,
+      child: MaterialApp(
+        home: LoginScreen(),
       ),
     );
+  }
 
-    await tester.enterText(find.byType(TextField).at(0), 'email@example.com');
-    await tester.enterText(find.byType(TextField).at(1), 'password');
-    await tester.tap(find.text('Login'));
-    await tester.pump();
+  group('LoginScreen', () {
+    testWidgets('should display username and password fields',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
 
-    expect(authProvider.isAuthenticated, false);
+      expect(find.byType(TextField), findsNWidgets(2));
+      expect(find.widgetWithText(TextField, 'Username'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Password'), findsOneWidget);
+    });
 
-    await tester.pump(Duration(seconds: 2)); // Simulate API call delay
-    expect(authProvider.isAuthenticated, true);
+    testWidgets('should display a login button', (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
+    });
+
+    testWidgets('should call login method on login button tap',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      final usernameField = find.widgetWithText(TextField, 'Username');
+      final passwordField = find.widgetWithText(TextField, 'Password');
+      final loginButton = find.widgetWithText(ElevatedButton, 'Login');
+
+      await tester.enterText(usernameField, 'test_user');
+      await tester.enterText(passwordField, 'test_password');
+      await tester.tap(loginButton);
+
+      verify(mockAuthProvider.login('test_user', 'test_password')).called(1);
+    });
   });
 }

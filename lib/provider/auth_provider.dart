@@ -1,17 +1,28 @@
 import 'package:flutter/foundation.dart';
 import 'package:irroba_test/services/irroba_api_service.dart';
+import 'package:irroba_test/models/user.dart';
 
 class AuthProvider with ChangeNotifier {
-  final ApiService apiService;
-  bool _isAuthenticated = false;
+  final IrrobaApiService apiService;
+
+  User? _user;
 
   AuthProvider({required this.apiService});
 
-  bool get isAuthenticated => _isAuthenticated;
+  User? get user => _user;
 
-  Future<void> login(String email, String password) async {
-    String? token = await apiService.getToken(email, password);
-    _isAuthenticated = token != null;
-    notifyListeners(); // Notifica os ouvintes após a mudança no estado
+  Future<void> login(String username, String password) async {
+    final token = await apiService.getToken(username, password);
+    if (token != null) {
+      _user = User(username: username, token: token);
+      notifyListeners();
+    }
   }
+
+  void logout() {
+    _user = null;
+    notifyListeners();
+  }
+
+  bool get isAuthenticated => _user != null;
 }

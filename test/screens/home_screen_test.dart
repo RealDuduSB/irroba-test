@@ -1,42 +1,52 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:irroba_test/screens/home_screen.dart';
-import 'package:irroba_test/models/product.dart';
-import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
+import 'package:irroba_test/provider/auth_provider.dart';
 
-import '../providers/auth_provider_test.dart';
+import 'mocks/mock_api_service.mocks.dart';
 
 void main() {
-  testWidgets('HomeScreen displays products from ApiService',
-      (WidgetTester tester) async {
-    // Crie um mock de ApiService
-    MockApiService mockApiService = MockApiService();
+  late AuthProvider authProvider;
+  late MockIrrobaApiService
+      mockApiService; // Certifique-se de usar o mock correto aqui
 
-    // Simule o retorno de produtos quando fetchProducts() for chamado
-    when(mockApiService.fetchProducts()).thenAnswer((_) async => [
-          Product(id: 1, name: 'Produto 1', price: 10.0),
-          Product(id: 2, name: 'Produto 2', price: 20.0),
-        ]);
+  setUp(() {
+    mockApiService = MockIrrobaApiService(); // Use o mock gerado aqui
+    authProvider = AuthProvider(apiService: mockApiService);
+  });
 
-    // Construa o widget da HomeScreen
-    await tester.pumpWidget(
-      MaterialApp(
-        home: ChangeNotifierProvider.value(
-          value: mockApiService,
-          child: HomeScreen(),
-        ),
-      ),
-    );
+  group('AuthProvider', () {
+    test('initially user should be null', () {
+      expect(authProvider.user, isNull);
+    });
 
-    // Verifique se o título da AppBar está correto
-    expect(find.text('Lista de Produtos'), findsOneWidget);
+    test('login should set user correctly', () async {
+      final username = 'test_user';
+      final password = 'test_password';
+      final token = 'mocked_token';
 
-    // Verifique se os produtos estão sendo exibidos corretamente na lista
-    expect(find.text('Produto 1'), findsOneWidget);
-    expect(find.text('R\$ 10.00'), findsOneWidget);
+      when(mockApiService.getToken(username, password))
+          .thenAnswer((_) async => token);
 
-    expect(find.text('Produto 2'), findsOneWidget);
-    expect(find.text('R\$ 20.00'), findsOneWidget);
+      await authProvider.login(username, password);
+
+      expect(authProvider.user, isNotNull);
+      expect(authProvider.user!.username, username);
+      expect(authProvider.user!.token, token);
+    });
+
+    test('logout should clear user', () async {
+      final username = 'test_user';
+      final password = 'test_password';
+      final token = 'mocked_token';
+
+      when(mockApiService.getToken(username, password))
+          .thenAnswer((_) async => token);
+
+      await authProvider.login(username, password);
+      expect(authProvider.user, isNotNull);
+
+      authProvider.logout();
+      expect(authProvider.user, isNull);
+    });
   });
 }
