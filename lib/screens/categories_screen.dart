@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:irroba_test/services/irroba_category_service.dart';
 import 'package:irroba_test/models/category.dart';
+import 'package:irroba_test/widgets/categories_widget.dart'; // Importando os widgets da nova estrutura
 
 class CategoriesScreen extends StatefulWidget {
   final IrrobaCategoryService categoryService;
@@ -46,23 +47,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Categorias'),
+        title: const Text('Categorias'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_categories[index].name),
-                  subtitle: Text(_categories[index].description),
-                  onTap: () {
+          ? const LoadingIndicator()
+          : _categories.isEmpty
+              ? const NoDataDisplay()
+              : CategoryList(
+                  categories: _categories,
+                  onTap: (category) {
                     // Implementar a navegação para detalhes da categoria
-                    // Exemplo: Navigator.pushNamed(context, '/category/${_categories[index].categoryId}');
+                    // Exemplo: Navigator.pushNamed(context, '/category/${category.categoryId}');
                   },
-                );
-              },
-            ),
+                ),
     );
   }
 }
