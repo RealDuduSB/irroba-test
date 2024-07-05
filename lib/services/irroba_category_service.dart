@@ -7,7 +7,6 @@ class IrrobaCategoryService {
 
   Future<List<Category>> fetchCategories({String? sort, String? order}) async {
     try {
-      // Construir a URL com os parâmetros de ordenação, se fornecidos
       String url = '$baseUrl/category';
       if (sort != null && order != null) {
         url += '?sort=$sort&order=$order';

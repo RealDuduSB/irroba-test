@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
+import 'package:irroba_test/provider/order_provider.dart'; // Importe o OrderProvider aqui
+import 'package:irroba_test/screens/home_screen.dart';
 import 'package:irroba_test/screens/init_screen.dart';
+import 'package:irroba_test/services/auth_service.dart';
 import 'package:irroba_test/services/irroba_api_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  IrrobaApiService apiService =
-      IrrobaApiService(); // Instanciando ApiService aqui
+  IrrobaApiService apiService = IrrobaApiService();
+  AuthService authService = AuthService();
 
-  runApp(MyApp(apiService: apiService));
+  runApp(MyApp(apiService: apiService, authService: authService));
 }
 
 class MyApp extends StatelessWidget {
   final IrrobaApiService apiService;
+  final AuthService authService;
 
-  const MyApp({super.key, required this.apiService});
+  const MyApp({Key? key, required this.apiService, required this.authService})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +27,27 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => AuthProvider(
-            apiService: apiService, // Passando a instância de ApiService aqui
+            authService: authService,
+            apiService: apiService,
           ),
         ),
+        ChangeNotifierProvider<OrderProvider>(
+          create: (_) => OrderProvider(apiService: apiService),
+        ),
       ],
-      child: const MaterialApp(
-        home: InitScreen(),
+      child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Consumer<AuthProvider>(
+                builder: (context, authProvider, _) {
+                  bool isAuthenticated = authProvider.isAuthenticated;
+                  return isAuthenticated
+                      ? const HomeScreen()
+                      : const InitScreen();
+                },
+              ),
+          '/home': (context) => const HomeScreen(),
+        },
       ),
     );
   }

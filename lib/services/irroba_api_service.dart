@@ -1,23 +1,30 @@
+// lib/services/irroba_api_service.dart
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:irroba_test/models/category.dart';
+import 'package:irroba_test/models/order.dart';
 import 'package:irroba_test/models/product.dart';
+import 'package:irroba_test/utils/api_endpoints.dart';
 
 class IrrobaApiService {
-  static const String baseUrl = 'https://api.irroba.com.br/v1';
-  static const String getTokenUrl = '$baseUrl/getToken';
+  static const String _username = 'basecomm_testemob';
+  static const String _password = 'IJYjaeVMjCQ7fs8Fhqm5R1koSeESlSfBiYtXwXA';
 
-  Future<String?> getToken(String username, String password) async {
+  Future<String?> getToken([String? username, String? password]) async {
     try {
       final response = await http.post(
-        Uri.parse(getTokenUrl),
+        Uri.parse('${API.BASE_URL}/getToken'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}),
+        body: jsonEncode({
+          'username': username ?? _username,
+          'password': password ?? _password
+        }),
       );
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
-        String? authorizationToken = data['data']['authorization'];
-        return authorizationToken;
+        final data = jsonDecode(response.body);
+        return data['data']['authorization'];
       } else {
         throw Exception('Failed to get token');
       }
@@ -27,49 +34,82 @@ class IrrobaApiService {
   }
 
   Future<List<Product>> fetchProducts() async {
-    try {
-      final response = await http.get(Uri.parse('$baseUrl/product'), headers: {
-        'Authorization':
-            'Bearer YOUR_TOKEN_HERE', // substitua pelo token correto
-        'Content-Type': 'application/json',
-      });
+    final token = await getToken(_username, _password);
+    if (token == null) {
+      throw Exception('No token obtained');
+    }
 
-      if (response.statusCode == 200) {
-        List<dynamic> data = jsonDecode(response.body)['data'];
-        return data
-            .map((productJson) => Product.fromJson(productJson))
-            .toList();
-      } else {
-        throw Exception('Failed to load products');
-      }
-    } catch (e) {
-      throw Exception('Failed to load products: $e');
+    final response = await http.get(
+      Uri.parse('${API.GET_PRODUCTS}'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      Iterable jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((product) => Product.fromJson(product)).toList();
+    } else {
+      throw Exception('Failed to load products');
     }
   }
 
   Future<List<Product>> fetchProductStocks(List<Product> products) async {
+    final token = await getToken(_username, _password);
+    if (token == null) {
+      throw Exception('No token obtained');
+    }
+
+    for (var product in products) {
+      final response = await http.get(
+        Uri.parse('${API.GET_PRODUCTS}/${product.id}/stock'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        product.stock = data['stock'];
+      } else {
+        throw Exception('Failed to load product stock');
+      }
+    }
+
+    return products;
+  }
+
+  Future<List<Category>> getCategories() async {
     try {
-      final List<Future<Product>> futures = products.map((product) async {
-        final response = await http.get(
-          Uri.parse('$baseUrl/product/${product.id}/stock'),
-          headers: {
-            'Authorization': 'Bearer YOUR_TOKEN_HERE',
-            'Content-Type': 'application/json',
-          },
-        );
+      final response = await http.get(Uri.parse('$API.BASE_URL/category'));
 
-        if (response.statusCode == 200) {
-          Map<String, dynamic> data = jsonDecode(response.body)['data'];
-          int stockQuantity = data['stock_quantity'];
-          return product.copyWith(stock: stockQuantity);
-        } else {
-          throw Exception('Failed to load stock for product ${product.id}');
-        }
-      }).toList();
-
-      return Future.wait(futures);
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        List<Category> categories = (jsonData['data'] as List)
+            .map((item) => Category.fromJson(item))
+            .toList();
+        return categories;
+      } else {
+        throw Exception('Failed to load categories');
+      }
     } catch (e) {
-      throw Exception('Failed to load product stocks: $e');
+      throw Exception('Error fetching categories: $e');
     }
   }
+
+  Future<List<OrderModel>> getOrdersInitData() async {
+    try {
+      final response = await http.get(Uri.parse(API.INIT_ORDER_DATA));
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        List<OrderModel> orders = (jsonData['data'] as List)
+            .map((item) => OrderModel.fromJson(item))
+            .toList();
+        return orders;
+      } else {
+        throw Exception('Failed to load orders');
+      }
+    } catch (e) {
+      throw Exception('Error fetching orders: $e');
+    }
+  }
+
+  // Outros métodos conforme necessário
 }

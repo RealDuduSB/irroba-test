@@ -1,23 +1,26 @@
+// lib/widgets/order_status_widgets.dart
+
 import 'package:flutter/material.dart';
 
 class StatusIdField extends StatelessWidget {
-  final Function(String?) onChanged;
+  final ValueChanged<String?> onChanged;
 
-  const StatusIdField({Key? key, required this.onChanged}) : super(key: key);
+  const StatusIdField({required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      decoration: const InputDecoration(labelText: 'Novo ID de Status'),
+      decoration: const InputDecoration(labelText: 'ID do Status'),
+      keyboardType: TextInputType.number,
       onChanged: onChanged,
     );
   }
 }
 
 class CommentField extends StatelessWidget {
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
 
-  const CommentField({Key? key, required this.onChanged}) : super(key: key);
+  const CommentField({required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -29,32 +32,28 @@ class CommentField extends StatelessWidget {
 }
 
 class CodeTrackingField extends StatelessWidget {
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
 
-  const CodeTrackingField({Key? key, required this.onChanged})
-      : super(key: key);
+  const CodeTrackingField({required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      decoration: const InputDecoration(labelText: 'Código de Rastreio'),
+      decoration: const InputDecoration(labelText: 'Código de Rastreamento'),
       onChanged: onChanged,
     );
   }
 }
 
 class UpdateStatusButton extends StatelessWidget {
-  final Function onPressed;
+  final VoidCallback onPressed;
 
-  const UpdateStatusButton({Key? key, required this.onPressed})
-      : super(key: key);
+  const UpdateStatusButton({required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        onPressed();
-      },
+      onPressed: onPressed,
       child: const Text('Atualizar Status'),
     );
   }

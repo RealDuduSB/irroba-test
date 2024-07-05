@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InitScreen extends StatefulWidget {
-  const InitScreen({super.key});
+  const InitScreen({Key? key}) : super(key: key);
 
   @override
   State<InitScreen> createState() => _InitScreenState();
@@ -20,7 +20,8 @@ class _InitScreenState extends State<InitScreen> {
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(
-                      'assets/Vector 1.png'), // Caminho da sua imagem de fundo
+                    'assets/Vector 1.png', // Caminho da sua imagem de fundo
+                  ),
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -31,8 +32,8 @@ class _InitScreenState extends State<InitScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(
-                      height:
-                          20), // Espaçamento entre o topo e a primeira imagem/texto
+                    height: 20,
+                  ), // Espaçamento entre o topo e a primeira imagem/texto
                   Image.asset('assets/Camada_1.png'),
                   const SizedBox(height: 100),
                   const Text(
@@ -60,17 +61,17 @@ class _InitScreenState extends State<InitScreen> {
           ],
         ),
         floatingActionButton: Padding(
-          padding: const EdgeInsets.only(right: 20, left: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ElevatedButton(
             onPressed: () {
-              // Ação ao pressionar o botão
+              // Navegar para a tela HomeScreen ao pressionar o botão
+              Navigator.of(context).pushNamed('/home');
             },
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),
               ),
               minimumSize: const Size(double.infinity, 50),
-              // Define o tamanho mínimo do botão
             ),
             child: const Text(
               'Continuar',
