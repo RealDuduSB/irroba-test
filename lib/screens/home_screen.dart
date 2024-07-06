@@ -15,15 +15,22 @@ class HomeScreen extends StatelessWidget {
       length: 3, // Número de abas
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Lista de Pedidos'), // Título da barra de navegação
-          bottom: TabBar(
+          backgroundColor: Colors.red,
+          title: const Text(
+            'IRROBA',
+            style: TextStyle(color: Colors.white),
+          ), // Título da barra de navegação
+          bottom: const TabBar(
             tabs: [
-              Tab(text: 'Categorias'), // Aba de categorias
+              Tab(
+                text: 'Categorias',
+              ), // Aba de categorias
               Tab(text: 'Ordenações'), // Aba de ordenações
               Tab(text: 'Filtros'), // Aba de filtros
             ],
           ),
         ),
+        drawer: _buildDrawer(context), // Adiciona o drawer aqui
         body: Consumer<OrderProvider>(
           builder: (context, orderProvider, _) {
             return FutureBuilder(
@@ -76,15 +83,73 @@ class HomeScreen extends StatelessWidget {
 
   /// Constrói a aba de ordenações (placeholder).
   Widget _buildSortingTab() {
-    return Center(
+    return const Center(
       child: Text('Aba de Ordenações'), // Mensagem de placeholder
     );
   }
 
   /// Constrói a aba de filtros (placeholder).
   Widget _buildFiltersTab() {
-    return Center(
+    return const Center(
       child: Text('Aba de Filtros'), // Mensagem de placeholder
+    );
+  }
+
+  /// Constrói o drawer de navegação.
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.red,
+            ),
+            child: Text(
+              'Menu de Navegação',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Início'),
+            onTap: () {
+              Navigator.pushNamed(context, '/home');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Pedidos'),
+            onTap: () {
+              Navigator.pushNamed(context, '/orderScreen');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.inventory),
+            title: const Text('Estoque de Produtos'),
+            onTap: () {
+              Navigator.pushNamed(context, '/productStock');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.pushNamed(context, '/settings');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('Cadastrar Produto'),
+            onTap: () {
+              Navigator.pushNamed(context, '/productRegistration');
+            },
+          ),
+        ],
+      ),
     );
   }
 }

@@ -15,7 +15,7 @@ class AuthProvider with ChangeNotifier {
   /// Construtor da classe AuthProvider.
   ///
   /// [apiService] é necessário para interagir com a API da Irroba.
-  AuthProvider({required this.apiService});
+  AuthProvider({required this.apiService, required AuthService authService});
 
   /// Retorna o usuário atualmente autenticado.
   User? get user => _user;

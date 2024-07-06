@@ -1,5 +1,3 @@
-// lib/services/irroba_api_service.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:irroba_test/models/category.dart';
@@ -52,27 +50,25 @@ class IrrobaApiService {
     }
   }
 
-  Future<List<Product>> fetchProductStocks(List<Product> products) async {
+  Future<List<Product>> fetchProductStocks() async {
     final token = await getToken(_username, _password);
     if (token == null) {
       throw Exception('No token obtained');
     }
 
-    for (var product in products) {
-      final response = await http.get(
-        Uri.parse('${API.GET_PRODUCTS}/${product.id}/stock'),
-        headers: {'Authorization': 'Bearer $token'},
-      );
+    final response = await http.get(
+      Uri.parse(API.GET_PRODUCTS),
+      headers: {'Authorization': 'Bearer $token'},
+    );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        product.stock = data['stock'];
-      } else {
-        throw Exception('Failed to load product stock');
-      }
+    if (response.statusCode == 200) {
+      Iterable jsonResponse = jsonDecode(response.body);
+      return jsonResponse.map((product) {
+        return Product.fromJson(product);
+      }).toList();
+    } else {
+      throw Exception('Failed to load product stocks');
     }
-
-    return products;
   }
 
   Future<List<Category>> getCategories() async {
@@ -108,6 +104,29 @@ class IrrobaApiService {
       }
     } catch (e) {
       throw Exception('Error fetching orders: $e');
+    }
+  }
+
+  Future<void> createProduct(Map<String, dynamic> productData) async {
+    final token = await getToken(_username, _password);
+    if (token == null) {
+      throw Exception('No token obtained');
+    }
+
+    final response = await http.post(
+      Uri.parse('${API.BASE_URL}/products'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(productData),
+    );
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to create product');
     }
   }
 

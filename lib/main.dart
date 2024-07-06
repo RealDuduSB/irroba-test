@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
-import 'package:irroba_test/provider/order_provider.dart'; // Importe o OrderProvider aqui
+import 'package:irroba_test/provider/order_provider.dart';
+import 'package:irroba_test/provider/product_provider.dart';
 import 'package:irroba_test/screens/home_screen.dart';
 import 'package:irroba_test/screens/init_screen.dart';
+import 'package:irroba_test/screens/order_screen.dart';
+import 'package:irroba_test/screens/product_registration_screen.dart';
+import 'package:irroba_test/screens/product_stock_screen.dart'; // Importe a nova tela
 import 'package:irroba_test/services/auth_service.dart';
 import 'package:irroba_test/services/irroba_api_service.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +38,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<OrderProvider>(
           create: (_) => OrderProvider(apiService: apiService),
         ),
+        ChangeNotifierProvider<ProductProvider>(
+          create: (_) => ProductProvider(
+              apiService: apiService), // Adicione o ProductProvider aqui
+        ),
       ],
       child: MaterialApp(
         initialRoute: '/',
@@ -47,6 +55,10 @@ class MyApp extends StatelessWidget {
                 },
               ),
           '/home': (context) => const HomeScreen(),
+          '/productStock': (context) => const ProductStockScreen(),
+          '/orderScreen': (context) => const OrderScreen(),
+          '/productRegistration': (context) =>
+              const ProductRegistrationScreen(),
         },
       ),
     );
