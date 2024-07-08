@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:irroba_test/models/category.dart';
+import 'package:irroba_test/utils/api_endpoints.dart';
 
 /// Um serviço para lidar com operações relacionadas a categorias através da API da Irroba.
 class IrrobaCategoryService {
@@ -14,7 +15,7 @@ class IrrobaCategoryService {
   /// - [order]: Ordem de classificação (ascendente ou descendente).
   Future<List<Category>> fetchCategories({String? sort, String? order}) async {
     try {
-      String url = '$baseUrl/category';
+      String url = '$API.GET_CATEGORY';
       if (sort != null && order != null) {
         url += '?sort=$sort&order=$order';
       }
@@ -49,7 +50,7 @@ class IrrobaCategoryService {
   Future<Category> fetchCategoryById(int categoryId) async {
     try {
       final response =
-          await http.get(Uri.parse('$baseUrl/category/$categoryId'));
+          await http.get(Uri.parse(API.GET_CATEGORY_BY_ID as String));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
