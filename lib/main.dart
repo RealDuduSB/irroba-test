@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:irroba_test/provider/auth_provider.dart';
 import 'package:irroba_test/provider/order_provider.dart';
 import 'package:irroba_test/provider/product_provider.dart';
 import 'package:irroba_test/screens/home_screen.dart';
