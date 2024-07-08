@@ -10,6 +10,6 @@ Ao optar pelo Provider no projeto Flutter, escolhi uma solução reconhecida por
 
 Envio este projeto como parte do processo seletivo para a vaga de desenvolvedor Júnior Flutter. No entanto, devido ao compromisso integral com meu emprego atual, que demanda mais de 10 horas diárias além de horas extras, reconheço que, apesar de minha dedicação máxima, pode ter havido lacunas e falta de cuidado em alguns pontos devido ao tempo limitado disponível. Portanto, considero este o motivo se houver falhas ou omissões em meu teste. Gostaria de ressaltar que meu desejo sincero é apresentar meu conhecimento na framework Flutter, mesmo que questões de design não tenham sido devidamente exploradas em meu teste, que é minha melhor habilidade. Dito isso, o foco máximo foi em qualidade, funcionalidade e demonstrar pontos importantes para um desenvolvedor Flutter. Estou ansioso para embarcar nesta jornada em sua empresa, acreditando que posso contribuir significativamente e continuamente aprimorar minhas habilidades através do trabalho.
 
-#API utilizada:
+#Documentação da API utilizada:
 
 https://www.irroba.com.br/dev/docs.html
