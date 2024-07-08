@@ -1,7 +1,7 @@
 # irroba_test
-# Desenvolvedor: Eduardo Silva Borges
 
-Projeto teste para Irroba
+### <h1 align="center"> Projeto teste para Irroba </h1>
+### <h1 align="center"> Desenvolvedor: Eduardo Silva Borges, desenvolvedor Mobile </h1>
 
 # Neste teste utilizei o provider. Por que?
 
