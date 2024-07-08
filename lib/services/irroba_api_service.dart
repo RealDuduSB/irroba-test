@@ -16,7 +16,7 @@ class IrrobaApiService {
   Future<String?> getToken([String? username, String? password]) async {
     try {
       final response = await http.post(
-        Uri.parse('${API.BASE_URL}/getToken'),
+        Uri.parse(API.GET_TOKEN),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username ?? _username,
@@ -46,7 +46,7 @@ class IrrobaApiService {
 
     try {
       final response = await http.get(
-        Uri.parse('${API.GET_PRODUCTS}'),
+        Uri.parse(API.GET_PRODUCTS),
         headers: {'Authorization': 'Bearer $token'},
       );
 
@@ -66,7 +66,7 @@ class IrrobaApiService {
   /// Busca a lista de categorias da API.
   Future<List<Category>> getCategories() async {
     try {
-      final response = await http.get(Uri.parse('$API.BASE_URL/category'));
+      final response = await http.get(Uri.parse(API.GET_CATEGORY));
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
@@ -110,7 +110,7 @@ class IrrobaApiService {
     }
 
     final response = await http.post(
-      Uri.parse('${API.BASE_URL}/products'),
+      Uri.parse(API.GET_PRODUCTS),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
