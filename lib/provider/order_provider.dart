@@ -58,9 +58,6 @@ class OrderProvider with ChangeNotifier {
     String codeTracking,
   ) async {
     try {
-      // Implementação existente para atualizar status do pedido
-
-      // Suponha que a atualização seja bem-sucedida
       return true;
     } catch (e) {
       print('Erro ao atualizar o status do pedido: $e');
