@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:irroba_test/models/category.dart'; // Importe o modelo de categoria
+import 'package:irroba_test/models/category.dart';
 import 'package:irroba_test/models/order.dart';
 import 'package:irroba_test/services/irroba_api_service.dart';
 
