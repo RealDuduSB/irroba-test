@@ -6,56 +6,42 @@ import 'package:irroba_test/screens/home_screen.dart';
 import 'package:irroba_test/screens/init_screen.dart';
 import 'package:irroba_test/screens/order_screen.dart';
 import 'package:irroba_test/screens/product_registration_screen.dart';
-import 'package:irroba_test/screens/product_stock_screen.dart'; // Importe a nova tela
-import 'package:irroba_test/services/auth_service.dart';
 import 'package:irroba_test/services/irroba_api_service.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  // Instancia o serviço necessário para o aplicativo.
   IrrobaApiService apiService = IrrobaApiService();
-  AuthService authService = AuthService();
 
-  runApp(MyApp(apiService: apiService, authService: authService));
+  runApp(MyApp(apiService: apiService));
 }
 
 class MyApp extends StatelessWidget {
   final IrrobaApiService apiService;
-  final AuthService authService;
 
-  const MyApp({Key? key, required this.apiService, required this.authService})
-      : super(key: key);
+  const MyApp({Key? key, required this.apiService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(
-            authService: authService,
-            apiService: apiService,
-          ),
-        ),
         ChangeNotifierProvider<OrderProvider>(
           create: (_) => OrderProvider(apiService: apiService),
         ),
         ChangeNotifierProvider<ProductProvider>(
-          create: (_) => ProductProvider(
-              apiService: apiService), // Adicione o ProductProvider aqui
+          create: (_) => ProductProvider(apiService: apiService),
         ),
       ],
       child: MaterialApp(
-        initialRoute: '/',
+        title: 'Irroba',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: '/init',
         routes: {
-          '/': (context) => Consumer<AuthProvider>(
-                builder: (context, authProvider, _) {
-                  bool isAuthenticated = authProvider.isAuthenticated;
-                  return isAuthenticated
-                      ? const HomeScreen()
-                      : const InitScreen();
-                },
-              ),
+          '/init': (context) => InitScreen(),
           '/home': (context) => const HomeScreen(),
-          '/productStock': (context) => const ProductStockScreen(),
           '/orderScreen': (context) => const OrderScreen(),
           '/productRegistration': (context) =>
               const ProductRegistrationScreen(),

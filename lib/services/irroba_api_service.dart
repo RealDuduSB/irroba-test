@@ -5,10 +5,14 @@ import 'package:irroba_test/models/order.dart';
 import 'package:irroba_test/models/product.dart';
 import 'package:irroba_test/utils/api_endpoints.dart';
 
+/// Serviço para interagir com a API da Irroba.
 class IrrobaApiService {
+  // Credenciais de autenticação para a API
   static const String _username = 'basecomm_testemob';
   static const String _password = 'IJYjaeVMjCQ7fs8Fhqm5R1koSeESlSfBiYtXwXA';
 
+  /// Obtém o token de autenticação da API.
+  /// [username] e [password] são opcionais e substituem as credenciais padrão.
   Future<String?> getToken([String? username, String? password]) async {
     try {
       final response = await http.post(
@@ -16,61 +20,50 @@ class IrrobaApiService {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'username': username ?? _username,
-          'password': password ?? _password
+          'password': password ?? _password,
         }),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['data']['authorization'];
+        String token = data['data']['authorization'];
+        print('Token obtido: $token');
+        return token;
       } else {
-        throw Exception('Failed to get token');
+        throw Exception('Falha ao obter o token');
       }
     } catch (e) {
-      throw Exception('Failed to get token: $e');
+      throw Exception('Falha ao obter o token: $e');
     }
   }
 
+  /// Busca a lista de produtos da API utilizando o token de autenticação.
   Future<List<Product>> fetchProducts() async {
     final token = await getToken(_username, _password);
     if (token == null) {
-      throw Exception('No token obtained');
+      throw Exception('Nenhum token obtido');
     }
 
-    final response = await http.get(
-      Uri.parse('${API.GET_PRODUCTS}'),
-      headers: {'Authorization': 'Bearer $token'},
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('${API.GET_PRODUCTS}'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
 
-    if (response.statusCode == 200) {
-      Iterable jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((product) => Product.fromJson(product)).toList();
-    } else {
-      throw Exception('Failed to load products');
-    }
-  }
-
-  Future<List<Product>> fetchProductStocks() async {
-    final token = await getToken(_username, _password);
-    if (token == null) {
-      throw Exception('No token obtained');
-    }
-
-    final response = await http.get(
-      Uri.parse(API.GET_PRODUCTS),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-
-    if (response.statusCode == 200) {
-      Iterable jsonResponse = jsonDecode(response.body);
-      return jsonResponse.map((product) {
-        return Product.fromJson(product);
-      }).toList();
-    } else {
-      throw Exception('Failed to load product stocks');
+      if (response.statusCode == 200) {
+        Iterable jsonResponse = jsonDecode(response.body);
+        return jsonResponse
+            .map((product) => Product.fromJson(product))
+            .toList();
+      } else {
+        throw Exception('Falha ao carregar os produtos');
+      }
+    } catch (e) {
+      throw Exception('Erro ao buscar os produtos: $e');
     }
   }
 
+  /// Busca a lista de categorias da API.
   Future<List<Category>> getCategories() async {
     try {
       final response = await http.get(Uri.parse('$API.BASE_URL/category'));
@@ -89,6 +82,7 @@ class IrrobaApiService {
     }
   }
 
+  /// Busca a lista inicial de pedidos da API.
   Future<List<OrderModel>> getOrdersInitData() async {
     try {
       final response = await http.get(Uri.parse(API.INIT_ORDER_DATA));
@@ -107,6 +101,8 @@ class IrrobaApiService {
     }
   }
 
+  /// Cria um novo produto na API.
+  /// [productData] é um mapa contendo os dados do produto.
   Future<void> createProduct(Map<String, dynamic> productData) async {
     final token = await getToken(_username, _password);
     if (token == null) {
@@ -129,6 +125,4 @@ class IrrobaApiService {
       throw Exception('Failed to create product');
     }
   }
-
-  // Outros métodos conforme necessário
 }

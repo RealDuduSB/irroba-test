@@ -6,7 +6,7 @@ class Category {
   final String metaDescription; // Descrição meta para SEO da categoria.
   final String description; // Descrição detalhada da categoria.
   final String dateAdded; // Data de adição da categoria.
-  final String status; // Status atual da categoria ('active' ou 'inactive').
+  final String status; // Status atual da categoria.
   final int sortOrder; // Ordem de classificação da categoria.
 
   /// Construtor da classe Category.
@@ -28,13 +28,13 @@ class Category {
       categoryId: json['category_id'], // ID da categoria no JSON.
       name: json['category_description'][0]
           ['name'], // Nome da categoria no JSON.
-      image: json['image'] ?? '', // Imagem da categoria no JSON (opcional).
+      image: json['image'] ?? '', // Imagem da categoria no JSON.
       metaTitle: json['category_description'][0]['meta_title'] ??
-          '', // Título meta da categoria no JSON (opcional).
+          '', // Título meta da categoria no JSON.
       metaDescription: json['category_description'][0]['meta_description'] ??
-          '', // Descrição meta da categoria no JSON (opcional).
+          '', // Descrição meta da categoria no JSON.
       description: json['category_description'][0]['description'] ??
-          '', // Descrição da categoria no JSON (opcional).
+          '', // Descrição da categoria no JSON.
       dateAdded: json['date_added'], // Data de adição da categoria no JSON.
       status: json['status'].toString(), // Status da categoria no JSON.
       sortOrder:

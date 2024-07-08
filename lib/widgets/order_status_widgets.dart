@@ -1,11 +1,10 @@
-// lib/widgets/order_status_widgets.dart
-
 import 'package:flutter/material.dart';
 
+/// Campo de ID do Status para atualização de pedidos.
 class StatusIdField extends StatelessWidget {
   final ValueChanged<String?> onChanged;
 
-  const StatusIdField({required this.onChanged});
+  const StatusIdField({super.key, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +16,11 @@ class StatusIdField extends StatelessWidget {
   }
 }
 
+/// Campo de Comentário para atualização de pedidos.
 class CommentField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
-  const CommentField({required this.onChanged});
+  const CommentField({super.key, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +31,11 @@ class CommentField extends StatelessWidget {
   }
 }
 
+/// Campo de Código de Rastreamento para atualização de pedidos.
 class CodeTrackingField extends StatelessWidget {
   final ValueChanged<String> onChanged;
 
-  const CodeTrackingField({required this.onChanged});
+  const CodeTrackingField({super.key, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +46,11 @@ class CodeTrackingField extends StatelessWidget {
   }
 }
 
+/// Botão para atualizar o status do pedido.
 class UpdateStatusButton extends StatelessWidget {
   final VoidCallback onPressed;
 
-  const UpdateStatusButton({required this.onPressed});
+  const UpdateStatusButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

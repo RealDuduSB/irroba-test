@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
+// lib/widgets/login_widgets.dart
 
+import 'package:flutter/material.dart';
+import 'package:irroba_test/provider/auth_provider.dart';
+import 'package:provider/provider.dart';
+
+/// Widget para entrada de email.
 class EmailField extends StatelessWidget {
   final TextEditingController controller;
 
-  const EmailField({Key? key, required this.controller}) : super(key: key);
+  const EmailField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +19,11 @@ class EmailField extends StatelessWidget {
   }
 }
 
+/// Widget para entrada de senha.
 class PasswordField extends StatelessWidget {
   final TextEditingController controller;
 
-  const PasswordField({Key? key, required this.controller}) : super(key: key);
+  const PasswordField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +35,20 @@ class PasswordField extends StatelessWidget {
   }
 }
 
+/// Botão de login.
 class LoginButton extends StatelessWidget {
   final Function onPressed;
 
-  const LoginButton({Key? key, required this.onPressed}) : super(key: key);
+  const LoginButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        onPressed();
+        Provider.of<AuthProvider>(context, listen: false).login(
+          context.read<TextEditingController>().text,
+          context.read<TextEditingController>().text,
+        );
       },
       child: const Text('Login'),
     );

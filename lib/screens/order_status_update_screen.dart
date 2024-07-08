@@ -1,13 +1,13 @@
-// lib/screens/order_status_update_screen.dart
+// não revisdado ou de acordo com o esperado pelo teste
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:irroba_test/services/irroba_api_service.dart';
-import 'package:irroba_test/widgets/order_status_widgets.dart'; // Importando os widgets da nova estrutura
+import 'package:irroba_test/widgets/order_status_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
 
+/// Tela para atualizar o status de um pedido.
 class OrderStatusUpdateScreen extends StatefulWidget {
   final String orderId;
 
@@ -23,6 +23,7 @@ class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
   String _comment = '';
   String _codeTracking = '';
 
+  /// Função para atualizar o status do pedido na API.
   void _updateOrderStatus(String token) async {
     try {
       final response = await http.put(
@@ -63,6 +64,7 @@ class _OrderStatusUpdateScreenState extends State<OrderStatusUpdateScreen> {
     }
   }
 
+  /// Callback para lidar com o evento de atualização do status do pedido.
   void _handleUpdateOrderStatus() {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final token = authProvider.user?.token;

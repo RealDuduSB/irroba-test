@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:irroba_test/provider/product_provider.dart';
+import 'package:irroba_test/widgets/products_widgets.dart';
 import 'package:provider/provider.dart';
 
+/// Tela para cadastrar um novo produto.
 class ProductRegistrationScreen extends StatefulWidget {
   const ProductRegistrationScreen({Key? key}) : super(key: key);
 
@@ -26,6 +28,7 @@ class _ProductRegistrationScreenState extends State<ProductRegistrationScreen> {
     super.dispose();
   }
 
+  /// Submete o formulário de cadastro do produto.
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
       final productProvider =
@@ -64,54 +67,12 @@ class _ProductRegistrationScreenState extends State<ProductRegistrationScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Nome do Produto'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o nome do produto';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _categoryIdController,
-                decoration: const InputDecoration(labelText: 'ID da Categoria'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o ID da categoria';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _priceController,
-                decoration: const InputDecoration(labelText: 'Preço'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o preço';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _stockController,
-                decoration: const InputDecoration(labelText: 'Estoque'),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a quantidade em estoque';
-                  }
-                  return null;
-                },
-              ),
+              ProductNameField(controller: _nameController),
+              CategoryIdField(controller: _categoryIdController),
+              PriceField(controller: _priceController),
+              StockField(controller: _stockController),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: const Text('Cadastrar Produto'),
-              ),
+              SubmitButton(onPressed: _submitForm),
             ],
           ),
         ),

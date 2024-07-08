@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:irroba_test/services/auth_service.dart';
 import 'package:mockito/mockito.dart';
 import 'package:irroba_test/provider/auth_provider.dart';
 
@@ -6,12 +8,12 @@ import 'mocks/mock_api_service.mocks.dart';
 
 void main() {
   late AuthProvider authProvider;
-  late MockIrrobaApiService
-      mockApiService; // Certifique-se de usar o mock correto aqui
+  late MockIrrobaApiService mockApiService;
 
   setUp(() {
-    mockApiService = MockIrrobaApiService(); // Use o mock gerado aqui
-    authProvider = AuthProvider(apiService: mockApiService);
+    mockApiService = MockIrrobaApiService();
+    authProvider =
+        AuthProvider(apiService: mockApiService, authService: AuthService());
   });
 
   group('AuthProvider', () {
@@ -20,9 +22,9 @@ void main() {
     });
 
     test('login should set user correctly', () async {
-      final username = 'test_user';
-      final password = 'test_password';
-      final token = 'mocked_token';
+      const username = 'test_user';
+      const password = 'test_password';
+      const token = 'mocked_token';
 
       when(mockApiService.getToken(username, password))
           .thenAnswer((_) async => token);
@@ -35,9 +37,9 @@ void main() {
     });
 
     test('logout should clear user', () async {
-      final username = 'test_user';
-      final password = 'test_password';
-      final token = 'mocked_token';
+      const username = 'test_user';
+      const password = 'test_password';
+      const token = 'mocked_token';
 
       when(mockApiService.getToken(username, password))
           .thenAnswer((_) async => token);

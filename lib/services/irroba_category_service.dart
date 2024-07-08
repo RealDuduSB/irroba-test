@@ -1,10 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:irroba_test/models/category.dart'; // Suponha que você tenha um modelo de categoria
+import 'package:irroba_test/models/category.dart';
 
+/// Um serviço para lidar com operações relacionadas a categorias através da API da Irroba.
 class IrrobaCategoryService {
+  /// URL base da API da Irroba.
   static const String baseUrl = 'https://api.irroba.com.br/v1';
 
+  /// Método para buscar uma lista de categorias da API da Irroba.
+  ///
+  /// Parâmetros opcionais:
+  /// - [sort]: Campo pelo qual as categorias devem ser ordenadas.
+  /// - [order]: Ordem de classificação (ascendente ou descendente).
   Future<List<Category>> fetchCategories({String? sort, String? order}) async {
     try {
       String url = '$baseUrl/category';
@@ -36,6 +43,9 @@ class IrrobaCategoryService {
     }
   }
 
+  /// Método para buscar uma categoria específica por ID através da API da Irroba.
+  ///
+  /// [categoryId]: ID da categoria a ser buscada.
   Future<Category> fetchCategoryById(int categoryId) async {
     try {
       final response =

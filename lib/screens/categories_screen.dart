@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:irroba_test/services/irroba_category_service.dart';
 import 'package:irroba_test/models/category.dart';
-import 'package:irroba_test/widgets/categories_widget.dart'; // Importando os widgets da nova estrutura
+import 'package:irroba_test/widgets/loading_indicator.dart';
+import 'package:irroba_test/widgets/no_data_display.dart';
+import 'package:irroba_test/widgets/category_list.dart';
 
-/// Tela que exibe a lista de categorias carregadas da Irroba API.
+/// Tela que exibe a lista de categorias carregadas da API.
 class CategoriesScreen extends StatefulWidget {
   final IrrobaCategoryService categoryService;
 
-  /// Construtor da classe CategoriesScreen.
-  ///
-  /// [categoryService] é necessário para interagir com o serviço de categorias da Irroba.
-  CategoriesScreen({required this.categoryService});
+  const CategoriesScreen({required this.categoryService});
 
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
@@ -18,34 +17,34 @@ class CategoriesScreen extends StatefulWidget {
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
   List<Category> _categories = []; // Lista de categorias carregadas
-  bool _isLoading = false; // Indica se a tela está carregando
+  bool _isLoading = false; // Indica se está carregando as categorias
 
   @override
   void initState() {
     super.initState();
-    _loadCategories();
+    _loadCategories(); // Carrega as categorias ao inicializar o estado da tela
   }
 
-  /// Método privado para carregar as categorias da API da Irroba.
+  /// Método para carregar as categorias da API.
   Future<void> _loadCategories() async {
     setState(() {
-      _isLoading = true; // Ativa o indicador de carregamento
+      _isLoading = true; // Define que está carregando as categorias
     });
 
     try {
-      var categories = await widget.categoryService.fetchCategories(
-          sort: 'date_added', order: 'DESC'); // Busca categorias da API
+      // Chama o serviço para buscar as categorias ordenadas por data de adição
+      var categories = await widget.categoryService
+          .fetchCategories(sort: 'date_added', order: 'DESC');
 
       setState(() {
-        _categories = categories; // Atualiza a lista de categorias
-        _isLoading = false; // Desativa o indicador de carregamento
+        _categories = categories; // Atualiza a lista de categorias carregadas
+        _isLoading = false; // Define que terminou de carregar as categorias
       });
     } catch (e) {
       setState(() {
-        _isLoading =
-            false; // Em caso de erro, desativa o indicador de carregamento
+        _isLoading = false; // Define que parou de carregar devido a um erro
       });
-      print('Erro ao carregar categorias: $e');
+      print('Erro ao carregar categorias: $e'); // Registra o erro no console
     }
   }
 
@@ -53,19 +52,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categorias'), // Título da barra de navegação
+        title: const Text('Categorias'), // Título da tela
       ),
       body: _isLoading
-          ? const LoadingIndicator() // Indicador de carregamento enquanto as categorias são buscadas
+          ? const LoadingIndicator() // Mostra indicador de carregamento se estiver carregando
           : _categories.isEmpty
-              ? const NoDataDisplay() // Exibe mensagem de nenhum dado encontrado se não houver categorias
+              ? const NoDataDisplay() // Mostra mensagem de que não há dados se não houver categorias
               : CategoryList(
-                  categories:
-                      _categories, // Exibe a lista de categorias carregadas
-                  onTap: (category) {
-                    // Implementar a navegação para detalhes da categoria
-                    // Exemplo: Navigator.pushNamed(context, '/category/${category.categoryId}');
-                  },
+                  categories: _categories,
+                  onTap: (category) {},
                 ),
     );
   }
